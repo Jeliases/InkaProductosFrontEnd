@@ -1,0 +1,138 @@
+<div class="container mt-5" style="max-width: 1100px;">
+
+  <!-- ENCABEZADO -->
+  <div class="text-center mb-5">
+    <h1 class="fw-bold text-primary mb-2">
+      Bienvenido a Inka Productos
+    </h1>
+    <p class="text-muted lead">
+      Plataforma profesional para el control operativo de inventario, movimientos y usuarios.
+    </p>
+  </div>
+
+
+  <!-- =============================== -->
+  <!-- ADMIN -->
+  <!-- =============================== -->
+  <div class="row g-4" *ngIf="esAdmin()">
+
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm p-4 border-0 rounded-4 border-start border-5 border-info">
+        <h5 class="fw-bold mb-2 text-info">Inventario Actual</h5>
+        <p class="text-muted">Consulta el stock por almacén.</p>
+        <a routerLink="/inventario" class="btn btn-info text-white fw-semibold mt-3 rounded-pill">
+          Ver Inventario
+        </a>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm p-4 border-0 rounded-4 border-start border-5 border-success">
+        <h5 class="fw-bold mb-2 text-success">Movimientos de Stock</h5>
+        <p class="text-muted">Registra entradas, salidas y traslados.</p>
+        <a routerLink="/compras" class="btn btn-success fw-semibold mt-3 rounded-pill">
+          Registrar Movimiento
+        </a>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm p-4 border-0 rounded-4 border-start border-5 border-warning">
+        <h5 class="fw-bold mb-2 text-warning">Aprobaciones</h5>
+        <p class="text-muted">Gestiona solicitudes de usuarios.</p>
+        <a routerLink="/aprobaciones" class="btn btn-warning fw-semibold mt-3 rounded-pill">
+          Ir a Aprobaciones
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+
+
+  <!-- =============================== -->
+  <!-- USER -->
+  <!-- =============================== -->
+  <div class="row g-4" *ngIf="esUser()">
+
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm p-4 border-0 rounded-4 border-start border-5 border-info">
+        <h5 class="fw-bold mb-2 text-info">Inventario</h5>
+        <p class="text-muted">Consulta el stock disponible.</p>
+        <a routerLink="/inventario" class="btn btn-info text-white fw-semibold mt-3 rounded-pill">
+          Ver Inventario
+        </a>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm p-4 border-0 rounded-4 border-start border-5 border-primary">
+        <h5 class="fw-bold mb-2 text-primary">Crear Solicitud</h5>
+        <p class="text-muted">Solicita compras o traslados.</p>
+        <a routerLink="/compras" class="btn btn-primary fw-semibold mt-3 rounded-pill">
+          Crear Solicitud
+        </a>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm p-4 border-0 rounded-4 border-start border-5 border-success">
+        <h5 class="fw-bold mb-2 text-success">Mis Solicitudes</h5>
+        <p class="text-muted">Revisa el estado de tus solicitudes.</p>
+        <a routerLink="/historial" class="btn btn-success fw-semibold mt-3 rounded-pill">
+          Ver Historial
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+
+
+  <!-- =============================== -->
+  <!-- TI -->
+  <!-- =============================== -->
+  <div class="row g-4" *ngIf="esTI()">
+
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm p-4 border-0 rounded-4 border-start border-5 border-info">
+        <h5 class="fw-bold mb-2 text-info">Inventario</h5>
+        <p class="text-muted">Estado general del stock.</p>
+        <a routerLink="/inventario" class="btn btn-info text-white fw-semibold mt-3 rounded-pill">
+          Ver Inventario
+        </a>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm p-4 border-0 rounded-4 border-start border-5 border-danger">
+        <h5 class="fw-bold mb-2 text-danger">Gestión de Usuarios</h5>
+        <p class="text-muted">Administra usuarios y permisos.</p>
+        <a routerLink="/usuarios" class="btn btn-danger text-white fw-semibold mt-3 rounded-pill">
+          Administrar
+        </a>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm p-4 border-0 rounded-4 border-start border-5 border-warning">
+        <h5 class="fw-bold mb-2 text-warning">Tickets TI</h5>
+        <p class="text-muted">Solicitudes técnicas internas.</p>
+        <a routerLink="/tickets" class="btn btn-warning fw-semibold mt-3 rounded-pill">
+          Ver Tickets
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- CONSEJO -->
+  <div class="alert alert-primary mt-5 d-flex align-items-center shadow-sm rounded-3">
+    <i class="bi bi-info-circle-fill me-3 fs-4"></i>
+    <div class="small">
+      <strong>Consejo:</strong> Comienza creando Categorías y Almacenes en el menú de Configuración.
+    </div>
+  </div>
+
+</div>

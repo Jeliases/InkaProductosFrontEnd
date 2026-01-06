@@ -1,0 +1,154 @@
+<div class="container-fluid mt-4">
+
+  <div class="card shadow-lg border-0 rounded-4 mb-4">
+    <div class="card-body p-4">
+
+      <h4 class="fw-bold mb-4 text-success">
+        <i class="bi bi-arrow-left-right"></i> Movimiento de Stock
+      </h4>
+
+      <div class="row g-4 align-items-end">
+
+
+        <div class="col-md-5">
+          <label class="fw-semibold">Almacén Origen</label>
+          <select class="form-select form-select-lg shadow-sm"
+                  [(ngModel)]="origenId"
+                  (change)="filtrarProductos()">
+            <option value="0">Seleccione</option>
+
+            <option *ngFor="let a of almacenes" [value]="a.almacenId">
+              {{ a.nombre }}
+            </option>
+          </select>
+        </div>
+
+        <div class="col-md-2 text-center">
+          <i class="bi bi-arrow-right-circle-fill text-success display-5"></i>
+        </div>
+
+        <div class="col-md-5">
+          <label class="fw-semibold">Almacén Destino</label>
+          <select class="form-select form-select-lg shadow-sm"
+                  [(ngModel)]="destinoId">
+            <option value="0">Seleccione</option>
+
+            <option *ngFor="let a of almacenes" [value]="a.almacenId">
+              {{ a.nombre }}
+            </option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row g-4">
+
+    <div class="col-md-8">
+      <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-header bg-dark text-white fw-bold rounded-top-4">
+          <i class="bi bi-box-seam"></i> Productos Disponibles
+        </div>
+
+        <div class="card-body p-0">
+
+          <div *ngIf="productosFiltrados.length === 0" class="text-center py-4 text-muted">
+            <i class="bi bi-exclamation-circle"></i>
+            Seleccione un almacén origen para ver productos.
+          </div>
+
+          <table class="table table-hover align-middle mb-0" *ngIf="productosFiltrados.length > 0">
+            <thead class="table-light">
+              <tr>
+                <th>SKU</th>
+                <th>Nombre</th>
+                <th>Stock</th>
+                <th style="width:130px">Cantidad</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let p of productosFiltrados">
+
+                <td>{{ p.sku }}</td>
+
+                <td class="fw-semibold">{{ p.nombre }}</td>
+
+                <td>
+                  <span class="badge bg-primary px-3 py-2">
+                    {{ p.stock }}
+                  </span>
+                </td>
+
+                <td>
+                  <input type="number" min="1" class="form-control form-control-sm shadow-sm"
+                         #cant value="1">
+                </td>
+
+                <td>
+                  <button class="btn btn-success btn-sm shadow-sm rounded-pill"
+                          (click)="agregarAlCarrito(p, +cant.value)">
+                    <i class="bi bi-cart-plus"></i> Añadir
+                  </button>
+                </td>
+
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-md-4">
+      <div class="carrito card shadow-lg rounded-4 border-0">
+
+        <div class="card-header bg-success text-white fw-bold rounded-top-4">
+          <i class="bi bi-cart-check-fill"></i> Carrito de Movimientos
+        </div>
+
+        <div class="card-body">
+
+
+          <div *ngIf="carrito.length === 0" class="text-center text-muted py-4">
+            <i class="bi bi-cart-x display-6"></i>
+            <p class="mt-2">Aún no hay productos agregados.</p>
+          </div>
+
+          <ul class="list-group mb-3" *ngIf="carrito.length > 0">
+
+            <li *ngFor="let c of carrito; let i = index"
+                class="list-group-item d-flex justify-content-between align-items-center shadow-sm mb-2 rounded-3">
+
+              <div>
+                <strong>{{ c.nombre }}</strong><br>
+                <small class="text-muted">x{{ c.cantidad }}</small>
+              </div>
+
+              <button class="btn btn-danger btn-sm rounded-pill"
+                      (click)="carrito.splice(i, 1)">
+                <i class="bi bi-trash"></i>
+              </button>
+
+            </li>
+
+          </ul>
+
+          <button class="btn btn-primary w-100 py-2 fw-bold rounded-pill shadow"
+                  (click)="confirmarOperacion()"
+                  [disabled]="carrito.length === 0">
+
+            {{ esAdmin ? "REALIZAR MOVIMIENTO" : "ENVIAR SOLICITUD" }}
+
+          </button>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

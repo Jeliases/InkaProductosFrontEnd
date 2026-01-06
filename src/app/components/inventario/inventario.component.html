@@ -1,0 +1,48 @@
+<div class="inventario-container">
+
+  <h2 class="titulo">Inventario General</h2>
+  <p class="subtitulo">Consulta y gestiona productos por almacén y categoría.</p>
+
+  <!-- FILTROS -->
+  <div class="filtros">
+    <select class="input-select" [(ngModel)]="almacenId" (change)="filtrar()">
+      <option value="">Todos los Almacenes</option>
+      <option *ngFor="let a of almacenes" [value]="a.almacenId">{{ a.nombre }}</option>
+    </select>
+
+    <select class="input-select" [(ngModel)]="categoriaId" (change)="filtrar()">
+      <option value="">Todas las Categorías</option>
+      <option *ngFor="let c of categorias" [value]="c.categoriaId">{{ c.nombre }}</option>
+    </select>
+
+    <button class="btn-limpiar" (click)="limpiarFiltros()">Limpiar</button>
+  </div>
+
+  <!-- TABLA -->
+  <table class="tabla-inventario">
+    <thead>
+      <tr>
+        <th>SKU</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Stock</th>
+        <th *ngIf="rol === 'TI'">Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let p of productos">
+        <td>{{ p.sku }}</td>
+        <td>{{ p.nombre }}</td>
+        <td>{{ p.descripcion }}</td>
+        <td class="stock">{{ p.stock }}</td>
+
+        <td *ngIf="rol === 'TI'" class="acciones">
+          <button class="btn-editar" (click)="editar(p)">✏️ Editar</button>
+          <button class="btn-eliminar" (click)="eliminar(p.productoId)">🗑️ Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>

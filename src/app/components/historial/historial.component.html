@@ -1,0 +1,35 @@
+<div class="container mt-4">
+
+  <h2 class="mb-4">Historial de Movimientos</h2>
+
+  <div class="card mb-3" *ngFor="let m of historial">
+    <div class="card-body">
+
+      <h5 class="card-title">Movimiento #{{ m.id }}</h5>
+
+      <p class="card-text">
+        <strong>Fecha:</strong> {{ m.fecha }} <br>
+        <strong>Usuario:</strong> {{ m.usuario }} <br>
+        <strong>Origen:</strong> {{ m.origen?.nombre }} <br>
+        <strong>Destino:</strong> {{ m.destino?.nombre }} <br>
+        <strong>Estado:</strong> {{ m.estado }}
+      </p>
+
+      <button class="btn btn-outline-primary btn-sm" (click)="toggle(m)">
+        {{ m.expanded ? 'Ocultar Detalles ▲' : 'Mostrar Detalles ▼' }}
+      </button>
+
+      <div *ngIf="m.expanded" class="mt-3">
+        <h6>Productos Movidos:</h6>
+        <ul class="list-group">
+          <li class="list-group-item" *ngFor="let d of m.detalles">
+            <strong>{{ d.producto?.nombre }}</strong>
+            — Cantidad: {{ d.cantidad }}
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+</div>

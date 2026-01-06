@@ -1,0 +1,30 @@
+.carrito {
+  position: sticky;
+  top: 20px;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f7faff;
+  transition: 0.2s;
+}
+
+.card {
+  animation: fadeIn 0.35s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(7px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.btn-primary, .btn-success {
+  transition: 0.2s ease;
+}
+
+.btn-primary:hover, .btn-success:hover {
+  transform: scale(1.04);
+}
+
+.list-group-item {
+  border: none;
+}

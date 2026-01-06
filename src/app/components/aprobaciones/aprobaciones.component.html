@@ -1,0 +1,48 @@
+<div class="container mt-4">
+
+    <h2 class="mb-4">Solicitudes Pendientes</h2>
+  
+    <div *ngIf="solicitudes.length === 0" class="alert alert-info">
+      No hay solicitudes pendientes.
+    </div>
+  
+    <div class="card mb-3" *ngFor="let s of solicitudes">
+      <div class="card-body">
+  
+        <h5 class="card-title">
+          Solicitud #{{ s.solicitudId }}
+        </h5>
+  
+        <p class="card-text">
+          <strong>Fecha:</strong> {{ s.fechaSolicitud }} <br>
+          <strong>Usuario:</strong> {{ s.usuarioSolicitante }} <br>
+          <strong>Origen:</strong> {{ s.origen?.nombre }} <br>
+          <strong>Destino:</strong> {{ s.destino?.nombre }} <br>
+          <strong>Estado:</strong>
+          <span class="badge bg-warning text-dark">{{ s.estado }}</span>
+        </p>
+
+        <button class="btn btn-outline-primary btn-sm" (click)="toggle(s)">
+          {{ s.expanded ? 'Ocultar productos ▲' : 'Mostrar productos ▼' }}
+        </button>
+
+        <div *ngIf="s.expanded" class="mt-3">
+          <h6>Productos solicitados:</h6>
+  
+          <ul class="list-group">
+            <li *ngFor="let d of s.detalles" class="list-group-item">
+              {{ d.producto?.nombre }} — Cantidad: {{ d.cantidad }}
+            </li>
+          </ul>
+        </div>
+
+        <div class="mt-3">
+          <button class="btn btn-success btn-sm" (click)="aprobar(s)">Aprobar</button>
+          <button class="btn btn-danger btn-sm" (click)="rechazar(s)">Rechazar</button>
+        </div>
+  
+      </div>
+    </div>
+  
+  </div>
+  

@@ -1,0 +1,27 @@
+.custom-navbar {
+  background: #9557dd;
+}
+
+.custom-link {
+  font-size: 15px;
+  transition: 0.2s;
+}
+
+.custom-link:hover {
+  color: #ffc107 !important;
+}
+
+.warning-link {
+  color: #ffcc00;
+}
+
+.user-badge {
+  background: #d286f0;
+  border-radius: 10px;
+}
+
+.btn-logout {
+  background: #d9534f;
+  color: white;
+  border-radius: 8px;
+}
