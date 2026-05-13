@@ -12,17 +12,30 @@ import { AuthService } from '../../services/auth.service';
 })
 export class InicioComponent implements OnInit {
 
-  usuario: any;
+  // Usamos variables específicas en lugar de un objeto 'any'
+  nombreUsuario: string = '';
   rol: string = '';
 
   constructor(private auth: AuthService) {}
 
   ngOnInit(): void {
-    this.usuario = this.auth.obtenerUsuario();
-    this.rol = (this.usuario?.rol || '').replace('ROLE_', ''); // ADMIN, USER, TI
+    // 1. Obtenemos el nombre directamente para mostrar en la bienvenida
+    this.nombreUsuario = this.auth.getNombre();
+
+    // 2. Obtenemos el rol ya procesado (sin el prefijo ROLE_)
+    this.rol = this.auth.getRol();
   }
 
-  esAdmin() { return this.rol === 'ADMIN'; }
-  esUser() { return this.rol === 'USER'; }
-  esTI()   { return this.rol === 'TI'; }
+  // Métodos de ayuda para el HTML (ngIf)
+  esAdmin(): boolean { 
+    return this.rol === 'ADMIN'; 
+  }
+  
+  esUser(): boolean { 
+    return this.rol === 'USER'; 
+  }
+  
+  esTI(): boolean { 
+    return this.rol === 'TI'; 
+  }
 }

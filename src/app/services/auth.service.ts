@@ -1,51 +1,62 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private apiUrl = 'http://localhost:8081/api/auth/login';
+  // URL base de tu API de autenticación
+  private apiUrl = 'http://localhost:8081/api/auth';
 
   constructor(private http: HttpClient) {}
 
+  /**
+   * Procesa el login y guarda el JWT de forma automática
+   */
   login(email: string, password: string): Observable<any> {
-    return this.http.post(this.apiUrl, { email, password });
+    return this.http.post(`${this.apiUrl}/login`, { email, password }).pipe(
+      tap((res: any) => {
+        // Almacenamos el Token y los datos del usuario de forma segura
+        this.guardarSesion(res);
+      })
+    );
   }
 
-  guardarUsuario(usuario: any, password: string) {
-    usuario.password = password;
-    localStorage.setItem("usuario", JSON.stringify(usuario));
+  /**
+   * Guarda los datos del AuthResponseDTO en el LocalStorage
+   */
+  private guardarSesion(authData: any) {
+    localStorage.setItem("token", authData.token);
+    localStorage.setItem("email", authData.email);
+    localStorage.setItem("nombre", authData.nombre);
+    // Guardamos los roles como un String JSON
+    localStorage.setItem("roles", JSON.stringify(authData.roles));
   }
 
-  obtenerUsuario() {
-    const data = localStorage.getItem("usuario");
-    return data ? JSON.parse(data) : null;
-  }
-
+  /**
+   * Limpia el LocalStorage al cerrar sesión
+   */
   cerrarSesion() {
-    localStorage.removeItem("usuario");
+    localStorage.clear();
   }
 
-
-  //  FIX CRÍTICO — getRol correcto
-
+  /**
+   * Retorna el rol principal del usuario sin el prefijo "ROLE_"
+   */
   getRol(): string {
-    const usuario = this.obtenerUsuario();
-    if (!usuario) return '';
+    const rolesData = localStorage.getItem("roles");
+    if (!rolesData) return '';
 
-    // Intentar todas las formas posibles
-    let rol =
-      usuario.rol ||
-      usuario.role ||
-      usuario.roles?.[0]?.nombre ||
-      usuario.authorities?.[0]?.authority;
+    const roles: string[] = JSON.parse(rolesData);
+    if (roles.length === 0) return '';
 
-    if (!rol) return '';
+    // Tomamos el primer rol (ej: "ROLE_ADMIN")
+    let rol = roles[0];
 
-    // Si viene como ROLE_ADMIN → ADMIN
+    // Limpiamos el prefijo para que tu lógica de Angular siga funcionando (ADMIN, USER, TI)
     if (rol.startsWith("ROLE_")) {
       rol = rol.substring(5);
     }
@@ -53,16 +64,35 @@ export class AuthService {
     return rol;
   }
 
+  /**
+   * Retorna el email del usuario logueado
+   */
   getEmail(): string {
-    const usuario = this.obtenerUsuario();
-    return usuario ? usuario.email : '';
+    return localStorage.getItem("email") || '';
   }
 
-  getAuthHeader() {
-    const usuario = this.obtenerUsuario();
-    if (!usuario) return null;
+  /**
+   * Retorna el nombre del usuario para mostrar en el Navbar
+   */
+  getNombre(): string {
+    return localStorage.getItem("nombre") || 'Usuario';
+  }
 
-    const basic = btoa(`${usuario.email}:${usuario.password}`);
-    return `Basic ${basic}`;
+  /**
+   * Genera la cabecera de autorización Bearer para el Interceptor
+   */
+  getAuthHeader(): string | null {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
+
+    // Ahora enviamos el Token JWT, no la contraseña
+    return `Bearer ${token}`;
+  }
+
+  /**
+   * Verifica si hay un token guardado (sesión activa)
+   */
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem("token");
   }
 }

@@ -4,15 +4,18 @@ import { AuthService } from './auth.service';
 
 export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
-  const token = auth.getAuthHeader();
+  const tokenHeader = auth.getAuthHeader();
 
-  if (token) {
-    req = req.clone({
+  // Si tenemos un token (sesión activa), clonamos la petición y añadimos la cabecera
+  if (tokenHeader) {
+    const authReq = req.clone({
       setHeaders: {
-        Authorization: token
+        Authorization: tokenHeader
       }
     });
+    return next(authReq);
   }
 
+  // Si no hay token, la petición sigue su curso normal (ej. para el login)
   return next(req);
 };
