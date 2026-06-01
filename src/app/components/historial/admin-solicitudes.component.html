@@ -1,0 +1,71 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-ui-checks"></i> Gestión de Solicitudes Pendientes</h2>
+  </div>
+  
+  <div class="alert alert-info shadow-sm border-0" *ngIf="solicitudesPendientes.length === 0">
+    <i class="bi bi-info-circle-fill me-2"></i> No hay solicitudes pendientes de aprobación en este momento.
+  </div>
+
+  <div class="table-responsive bg-white rounded shadow-sm border" *ngIf="solicitudesPendientes.length > 0">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-dark">
+        <tr>
+          <th>ID</th>
+          <th>Fecha de Solicitud</th>
+          <th>Solicitante</th>
+          <th>Origen <i class="bi bi-arrow-right mx-1"></i> Destino</th>
+          <th class="text-center">Detalles</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let solicitud of solicitudesPendientes">
+          <tr>
+            <td class="fw-bold">#{{ solicitud.solicitudId }}</td>
+            <td>{{ solicitud.fechaSolicitud | date:'short' }}</td>
+            <td><i class="bi bi-person-circle text-secondary me-1"></i> {{ solicitud.usuarioSolicitante }}</td>
+            <td>
+              <span class="badge bg-light text-dark border">{{ solicitud.origen?.nombre || solicitud.origenNombre || solicitud.origen }}</span>
+              <i class="bi bi-arrow-right mx-1 text-primary"></i>
+              <span class="badge bg-light text-dark border">{{ solicitud.destino?.nombre || solicitud.destinoNombre || solicitud.destino }}</span>
+            </td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-outline-info" (click)="toggle(solicitud)">
+                <i class="bi" [ngClass]="solicitud.expanded ? 'bi-chevron-up' : 'bi-chevron-down'"></i> Ver Productos
+              </button>
+            </td>
+            <td class="text-center">
+              <button class="btn btn-success btn-sm me-2 shadow-sm" (click)="aprobar(solicitud.solicitudId)">
+                <i class="bi bi-check-circle-fill"></i> Aprobar
+              </button>
+              <button class="btn btn-danger btn-sm shadow-sm" (click)="rechazar(solicitud.solicitudId)">
+                <i class="bi bi-x-circle-fill"></i> Rechazar
+              </button>
+            </td>
+          </tr>
+          
+          <!-- Fila expandible con los productos de la solicitud -->
+          <tr *ngIf="solicitud.expanded" class="bg-light">
+            <td colspan="6" class="p-3">
+              <div class="card border-0 shadow-sm">
+                <div class="card-header bg-secondary text-white py-1">
+                  <small><i class="bi bi-box-seam"></i> Productos a trasladar</small>
+                </div>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item d-flex justify-content-between align-items-center py-1" *ngFor="let detalle of solicitud.detalles">
+                    <span>
+                      <span class="fw-bold">{{ detalle.producto?.nombre || detalle.productoNombre || detalle.nombre || detalle.producto }}</span> 
+                      <span class="text-muted small ms-2">(SKU: {{ detalle.producto?.sku || detalle.sku || 'N/A' }})</span>
+                    </span>
+                    <span class="badge bg-primary rounded-pill">Cant: {{ detalle.cantidad }}</span>
+                  </li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -28,14 +28,14 @@ export class InicioComponent implements OnInit {
 
   // Métodos de ayuda para el HTML (ngIf)
   esAdmin(): boolean { 
-    return this.rol === 'ADMIN'; 
+    return this.rol === 'SUPERVISOR'; 
   }
   
   esUser(): boolean { 
-    return this.rol === 'USER'; 
+    return this.rol === 'USUARIO'; 
   }
   
   esTI(): boolean { 
-    return this.rol === 'TI'; 
+    return this.rol === 'ADMIN'; 
   }
 }

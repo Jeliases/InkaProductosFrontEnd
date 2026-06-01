@@ -1,68 +1,56 @@
 import { Component, OnInit } from '@angular/core';
-import { InventarioService } from '../../services/inventario.service';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
+import { FormsModule } from '@angular/forms';
+import { InventarioService } from '../../services/inventario.service';
 
 @Component({
   selector: 'app-inventario',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './inventario.component.html',
   styleUrls: ['./inventario.component.css']
 })
 export class InventarioComponent implements OnInit {
 
+  productos: any[] = [];
   categorias: any[] = [];
   almacenes: any[] = [];
-  productos: any[] = [];
 
-  categoriaId: number | null = null;
-  almacenId: number | null = null;
+  categoriaSeleccionada: number | undefined;
+  almacenSeleccionado: number | undefined;
 
-  rol: string = "";
-
-  constructor(
-    private invService: InventarioService,
-    private auth: AuthService
-  ) {}
+  constructor(private inventarioService: InventarioService) { }
 
   ngOnInit(): void {
-    this.rol = this.auth.getRol();  // ← IMPORTANTE
-
-    this.invService.getCategorias().subscribe(r => this.categorias = r);
-    this.invService.getAlmacenes().subscribe(r => this.almacenes = r);
-    this.cargarTodos();
+    this.cargarCategorias();
+    this.cargarAlmacenes();
+    this.aplicarFiltros(); // Carga inicial de todos los productos
   }
 
-  cargarTodos() {
-    this.invService.filtrarProductos().subscribe(r => this.productos = r);
-  }
-
-  filtrar() {
-    this.invService.filtrarProductos(this.categoriaId!, this.almacenId!)
-      .subscribe(r => this.productos = r);
-  }
-
-  limpiarFiltros() {
-    this.categoriaId = null;
-    this.almacenId = null;
-    this.cargarTodos();
-  }
-  
-
-  editar(prod: any) {
-    alert("Abrir modal de edición para: " + prod.nombre);
-  }
-
-  eliminar(id: number) {
-    if (!confirm("¿Seguro que deseas eliminar el producto?")) return;
-
-    this.invService.eliminar(id).subscribe(() => {
-      this.cargarTodos();
+  cargarCategorias() {
+    this.inventarioService.getCategorias().subscribe({
+      next: (data) => this.categorias = data,
+      error: (err) => console.error('Error cargando categorías', err)
     });
   }
 
- 
-  
+  cargarAlmacenes() {
+    this.inventarioService.getAlmacenes().subscribe({
+      next: (data) => this.almacenes = data,
+      error: (err) => console.error('Error cargando almacenes', err)
+    });
+  }
+
+  aplicarFiltros() {
+    this.inventarioService.filtrarProductos(this.categoriaSeleccionada, this.almacenSeleccionado).subscribe({
+      next: (data) => this.productos = data,
+      error: (err) => console.error('Error filtrando productos', err)
+    });
+  }
+
+  limpiarFiltros() {
+    this.categoriaSeleccionada = undefined;
+    this.almacenSeleccionado = undefined;
+    this.aplicarFiltros();
+  }
 }

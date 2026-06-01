@@ -32,8 +32,11 @@ export class AuthService {
     localStorage.setItem("token", authData.token);
     localStorage.setItem("email", authData.email);
     localStorage.setItem("nombre", authData.nombre);
+    
+    // Verificamos de qué forma el backend envía los roles para evitar guardar 'undefined'
+    const rolesParaGuardar = authData.roles || authData.rol || authData.role || authData.authorities || [];
     // Guardamos los roles como un String JSON
-    localStorage.setItem("roles", JSON.stringify(authData.roles));
+    localStorage.setItem("roles", JSON.stringify(rolesParaGuardar));
   }
 
   /**
@@ -48,20 +51,37 @@ export class AuthService {
    */
   getRol(): string {
     const rolesData = localStorage.getItem("roles");
-    if (!rolesData) return '';
-
-    const roles: string[] = JSON.parse(rolesData);
-    if (roles.length === 0) return '';
-
-    // Tomamos el primer rol (ej: "ROLE_ADMIN")
-    let rol = roles[0];
-
-    // Limpiamos el prefijo para que tu lógica de Angular siga funcionando (ADMIN, USER, TI)
-    if (rol.startsWith("ROLE_")) {
-      rol = rol.substring(5);
+    
+    // Validamos que no esté vacío, nulo o sea la cadena literal "undefined"
+    if (!rolesData || rolesData === 'undefined' || rolesData === 'null') {
+      return '';
     }
 
-    return rol;
+    try {
+      const roles = JSON.parse(rolesData);
+      
+      // Si es un arreglo (lo más común)
+      if (Array.isArray(roles) && roles.length > 0) {
+        let rol = roles[0];
+        if (rol.startsWith("ROLE_")) {
+          rol = rol.substring(5);
+        }
+        return rol;
+      }
+
+      // Si por alguna razón vino como un String directo en vez de arreglo
+      if (typeof roles === 'string') {
+        let rol = roles;
+        if (rol.startsWith("ROLE_")) {
+          rol = rol.substring(5);
+        }
+        return rol;
+      }
+    } catch (e) {
+      console.error("Error al leer los roles:", e);
+    }
+
+    return '';
   }
 
   /**
@@ -85,7 +105,8 @@ export class AuthService {
     const token = localStorage.getItem("token");
     if (!token) return null;
 
-    // Ahora enviamos el Token JWT, no la contraseña
+    // El backend de Spring Security requiere el estándar "Bearer " 
+    // seguido de un espacio antes del token JWT
     return `Bearer ${token}`;
   }
 

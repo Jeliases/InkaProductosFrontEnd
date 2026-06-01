@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -20,12 +20,12 @@ export class InventarioService {
   }
 
   filtrarProductos(categoriaId?: number, almacenId?: number): Observable<any[]> {
-    let params: any = {};
+    let params = new HttpParams();
 
-    if (categoriaId) params.categoriaId = categoriaId;
-    if (almacenId) params.almacenId = almacenId;
+    if (categoriaId) params = params.set('categoriaId', categoriaId);
+    if (almacenId) params = params.set('almacenId', almacenId);
 
-    return this.http.get<any[]>(`${this.url}/productos/filtrar`, { params });
+    return this.http.get<any[]>(`${this.url}/productos`, { params });
   }
 
   eliminar(id: number) {

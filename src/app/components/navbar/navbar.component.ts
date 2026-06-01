@@ -23,12 +23,14 @@ export class NavbarComponent implements OnInit {
     this.usuarioNombre = this.auth.getNombre();
     this.email = this.auth.getEmail();
     this.rol = this.auth.getRol(); // Ya viene sin "ROLE_" gracias a tu AuthService
+
+    console.log("🟢 Rol detectado en Navbar:", this.rol); // <-- Útil para saber qué rol tienes
   }
 
   // Lógica de roles simplificada para tus directivas *ngIf del HTML
-  esAdmin() { return this.rol === 'ADMIN'; }
-  esUser()  { return this.rol === 'USER'; }
-  esTI()    { return this.rol === 'TI'; }
+  esAdmin() { return this.rol === 'SUPERVISOR'; }
+  esUser()  { return this.rol === 'USUARIO'; }
+  esTI()    { return this.rol === 'ADMIN'; } 
 
   /**
    * Logout Profesional

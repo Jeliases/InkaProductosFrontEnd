@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ComprasService } from '../../services/compras.service';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { InventarioService } from '../../services/inventario.service';
+import { SolicitudService } from '../../services/solicitud.service';
+import { TrasladoService } from '../../services/traslado.service';
 
 @Component({
   selector: 'app-compras',
@@ -24,19 +26,21 @@ export class ComprasComponent implements OnInit {
   usuarioEmail: string = '';
 
   constructor(
-    private comprasService: ComprasService,
-    private auth: AuthService
+    private auth: AuthService,
+    private inventarioService: InventarioService,
+    private solicitudService: SolicitudService,
+    private trasladoService: TrasladoService
   ) {}
 
   ngOnInit(): void {
-    this.esAdmin = this.auth.getRol() === 'ADMIN';
+    this.esAdmin = this.auth.getRol() === 'SUPERVISOR';
     this.usuarioEmail = this.auth.getEmail();
 
     this.cargarData();
   }
 
   cargarData() {
-    this.comprasService.getAlmacenes().subscribe(r => this.almacenes = r);
+    this.inventarioService.getAlmacenes().subscribe(r => this.almacenes = r);
   }
 
   // FILTRAR PRODUCTOS SEGÚN ALMACÉN ORIGEN
@@ -46,7 +50,8 @@ export class ComprasComponent implements OnInit {
       return;
     }
 
-    this.comprasService.filtrarProductos(this.origenId)
+    // Usamos el InventarioService enviando 'undefined' como categoría y el origenId como almacén
+    this.inventarioService.filtrarProductos(undefined, this.origenId)
       .subscribe(r => this.productosFiltrados = r);
   }
 
@@ -87,8 +92,7 @@ export class ComprasComponent implements OnInit {
     const payload = {
       origenId: this.origenId,
       destinoId: this.destinoId,
-      usuarioEmail: this.usuarioEmail,
-      esAdmin: this.esAdmin,
+      observacion: "Solicitud generada a través del portal web", // Agregamos la observación que pide tu backend
       items: this.carrito.map(c => ({
         productoId: c.productoId,
         cantidad: c.cantidad
@@ -97,7 +101,7 @@ export class ComprasComponent implements OnInit {
 
     // USER → SOLO ENVÍA SOLICITUD
     if (!this.esAdmin) {
-      this.comprasService.enviarSolicitud(payload).subscribe({
+      this.solicitudService.crearSolicitud(payload).subscribe({
         next: () => {
           alert("Solicitud enviada al administrador.");
           this.vaciarCarrito();
@@ -111,7 +115,7 @@ export class ComprasComponent implements OnInit {
     }
 
     // ADMIN → REALIZA MOVIMIENTO REAL
-    this.comprasService.realizarTransaccion(payload).subscribe({
+    this.trasladoService.registrarTrasladoDirecto(payload).subscribe({
       next: () => {
         alert("Movimiento realizado con éxito.");
         this.vaciarCarrito();

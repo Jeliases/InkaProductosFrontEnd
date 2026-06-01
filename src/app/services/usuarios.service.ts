@@ -17,10 +17,9 @@ export class UsuariosService {
   }
 
   // CREAR
-  crear(usuario: any, rol: string): Observable<any> {
-    return this.http.post(`${this.url}/${rol}`, usuario);
+  crear(usuario: any): Observable<any> {
+    return this.http.post(this.url, usuario);
   }
-  
 
   // EDITAR
   editar(id: number, usuario: any): Observable<any> {

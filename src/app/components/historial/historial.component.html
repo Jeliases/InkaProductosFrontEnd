@@ -1,35 +1,120 @@
 <div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>
+      <i class="bi" [ngClass]="(rol === 'SUPERVISOR' || rol === 'ADMIN') ? 'bi-clipboard-data' : 'bi-clock-history'"></i>
+      {{ (rol === 'SUPERVISOR' || rol === 'ADMIN') ? 'Kardex - Historial de Movimientos' : 'Mis Solicitudes de Traslado' }}
+    </h2>
+  </div>
 
-  <h2 class="mb-4">Historial de Movimientos</h2>
-
-  <div class="card mb-3" *ngFor="let m of historial">
-    <div class="card-body">
-
-      <h5 class="card-title">Movimiento #{{ m.id }}</h5>
-
-      <p class="card-text">
-        <strong>Fecha:</strong> {{ m.fecha }} <br>
-        <strong>Usuario:</strong> {{ m.usuario }} <br>
-        <strong>Origen:</strong> {{ m.origen?.nombre }} <br>
-        <strong>Destino:</strong> {{ m.destino?.nombre }} <br>
-        <strong>Estado:</strong> {{ m.estado }}
-      </p>
-
-      <button class="btn btn-outline-primary btn-sm" (click)="toggle(m)">
-        {{ m.expanded ? 'Ocultar Detalles ▲' : 'Mostrar Detalles ▼' }}
-      </button>
-
-      <div *ngIf="m.expanded" class="mt-3">
-        <h6>Productos Movidos:</h6>
-        <ul class="list-group">
-          <li class="list-group-item" *ngFor="let d of m.detalles">
-            <strong>{{ d.producto?.nombre }}</strong>
-            — Cantidad: {{ d.cantidad }}
-          </li>
-        </ul>
-      </div>
-
+  <!-- FILTRO DE ALMACÉN PARA EL KARDEX -->
+  <div class="row mb-3" *ngIf="rol === 'SUPERVISOR' || rol === 'ADMIN'">
+    <div class="col-md-4">
+      <label for="filtroAlmacenKardex" class="form-label text-muted fw-bold">Kardex del Almacén:</label>
+      <select id="filtroAlmacenKardex" class="form-select shadow-sm" [(ngModel)]="almacenSeleccionado" (ngModelChange)="cargarHistorialGeneral()">
+        <option *ngFor="let alm of almacenes" [ngValue]="alm.almacenId || alm.id">{{ alm.nombre }}</option>
+      </select>
     </div>
   </div>
 
+  <!-- VISTA PARA SUPERVISOR (KARDEX) -->
+  <div class="table-responsive bg-white rounded shadow-sm border" *ngIf="rol === 'SUPERVISOR' || rol === 'ADMIN'">
+    <table class="table table-striped table-hover align-middle mb-0">
+      <thead class="table-dark">
+        <tr>
+          <th>Fecha</th>
+          <th>Operación</th>
+          <th>Producto</th>
+          <th>Origen <i class="bi bi-arrow-right mx-1"></i> Destino</th>
+          <th class="text-center">Cant. Movida</th>
+          <th class="text-center">Stock Final</th>
+          <th>Usuario</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="historial.length === 0">
+          <td colspan="7" class="text-center text-muted py-4">No hay movimientos registrados.</td>
+        </tr>
+        <tr *ngFor="let item of historial">
+          <td>{{ item.fecha | date:'short' }}</td>
+          <td><span class="badge bg-secondary">{{ item.tipoOperacion }}</span></td>
+          <td>
+            <div class="fw-bold">{{ item.producto }}</div>
+            <div class="small text-muted">SKU: {{ item.sku }}</div>
+          </td>
+          <td>
+            <span *ngIf="item.almacenOrigen">{{ item.almacenOrigen }}</span>
+            <span *ngIf="!item.almacenOrigen" class="text-muted">N/A</span>
+            <i class="bi bi-arrow-right mx-2 text-primary"></i>
+            <span *ngIf="item.almacenDestino">{{ item.almacenDestino }}</span>
+            <span *ngIf="!item.almacenDestino" class="text-muted">N/A</span>
+          </td>
+          <td class="text-center fw-bold fs-6" [ngClass]="{'text-success': item.esIngreso, 'text-danger': !item.esIngreso}">
+            {{ item.esIngreso ? '+' : '-' }}{{ item.cantidadAbsoluta }}
+          </td>
+          <td class="text-center fw-bold">{{ item.stockNuevo }}</td>
+          <td>{{ item.usuario }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- VISTA PARA USUARIOS (MIS SOLICITUDES) -->
+  <div class="table-responsive bg-white rounded shadow-sm border" *ngIf="rol === 'USUARIO'">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-dark">
+        <tr>
+          <th>ID</th>
+          <th>Fecha</th>
+          <th>Origen <i class="bi bi-arrow-right mx-1"></i> Destino</th>
+          <th>Estado</th>
+          <th class="text-center">Detalles</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="historial.length === 0">
+          <td colspan="5" class="text-center text-muted py-4">No tienes solicitudes de traslado.</td>
+        </tr>
+        <ng-container *ngFor="let item of historial">
+          <tr>
+            <td class="fw-bold">#{{ item.id || item.solicitudId }}</td>
+            <td>{{ item.fecha || item.fechaSolicitud | date:'short' }}</td>
+            <td>
+              <span *ngIf="item.origen || item.origenNombre || item.almacenOrigen">{{ item.origen?.nombre || item.origenNombre || item.origen || item.almacenOrigen }}</span>
+              <i class="bi bi-arrow-right mx-2 text-primary"></i>
+              <span *ngIf="item.destino || item.destinoNombre || item.almacenDestino">{{ item.destino?.nombre || item.destinoNombre || item.destino || item.almacenDestino }}</span>
+              <div class="small text-muted mt-1" *ngIf="item.observacion || item.referencia"><i class="bi bi-chat-left-text"></i> {{ item.observacion || item.referencia }}</div>
+            </td>
+            <td>
+              <span class="badge fs-6" [ngClass]="{'bg-warning text-dark': item.estado === 'PENDIENTE', 'bg-success': item.estado === 'APROBADA' || item.estado === 'APROBADO', 'bg-danger': item.estado === 'RECHAZADA' || item.estado === 'RECHAZADO'}">
+                {{ item.estado || 'PENDIENTE' }}
+              </span>
+            </td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-outline-info" (click)="toggle(item)">
+                <i class="bi" [ngClass]="item.expanded ? 'bi-chevron-up' : 'bi-chevron-down'"></i> Ver Productos
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="item.expanded" class="bg-light">
+            <td colspan="5" class="p-3">
+              <div class="card border-0 shadow-sm">
+                <div class="card-header bg-secondary text-white py-1">
+                  <small><i class="bi bi-box-seam"></i> Productos solicitados</small>
+                </div>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item d-flex justify-content-between align-items-center py-1" *ngFor="let detalle of item.detalles">
+                    <span>
+                      <span class="fw-bold">{{ detalle.producto?.nombre || detalle.productoNombre || detalle.nombre || detalle.producto }}</span> 
+                      <span class="text-muted small ms-2">(SKU: {{ detalle.producto?.sku || detalle.sku || 'N/A' }})</span>
+                    </span>
+                    <span class="badge bg-primary rounded-pill">Cant: {{ detalle.cantidad }}</span>
+                  </li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
 </div>
