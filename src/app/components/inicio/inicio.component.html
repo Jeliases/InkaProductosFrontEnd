@@ -95,11 +95,11 @@
   <div class="row g-4" *ngIf="esTI()">
 
     <div class="col-md-4">
-      <div class="card h-100 shadow-sm p-4 border-0 rounded-4 border-start border-5 border-info">
-        <h5 class="fw-bold mb-2 text-info">Inventario</h5>
-        <p class="text-muted">Estado general del stock.</p>
-        <a routerLink="/inventario" class="btn btn-info text-white fw-semibold mt-3 rounded-pill">
-          Ver Inventario
+      <div class="card h-100 shadow-sm p-4 border-0 rounded-4 border-start border-5 border-primary">
+        <h5 class="fw-bold mb-2 text-primary">Gestión de Productos</h5>
+        <p class="text-muted">Añade, edita y desactiva productos del catálogo.</p>
+        <a routerLink="/productos" class="btn btn-primary fw-semibold mt-3 rounded-pill">
+          Administrar Productos
         </a>
       </div>
     </div>
@@ -116,13 +116,15 @@
 
     <div class="col-md-4">
       <div class="card h-100 shadow-sm p-4 border-0 rounded-4 border-start border-5 border-warning">
-        <h5 class="fw-bold mb-2 text-warning">Tickets TI</h5>
-        <p class="text-muted">Solicitudes técnicas internas.</p>
-        <a routerLink="/tickets" class="btn btn-warning fw-semibold mt-3 rounded-pill">
-          Ver Tickets
+        <h5 class="fw-bold mb-2 text-warning">Historial</h5>
+        <p class="text-muted">Historial de Movimientos</p>
+        <a routerLink="/historial" class="btn btn-warning fw-semibold mt-3 rounded-pill">
+          Ver movimientos
         </a>
       </div>
     </div>
+
+    
 
   </div>
 

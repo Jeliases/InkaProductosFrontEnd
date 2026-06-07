@@ -6,9 +6,10 @@ import { InventarioComponent } from './components/inventario/inventario.componen
 import { ComprasComponent } from './components/compras/compras.component';
 import { HistorialComponent } from './components/historial/historial.component';
 import { AdminSolicitudesComponent } from './components/historial/admin-solicitudes.component';
-import { TicketTiComponent } from './components/ticket-ti/ticket-ti.component';
 import { UsuariosComponent } from './components/usuarios/usuarios.component';
 import { roleGuard } from './guards/role.guard';
+import { ProductListComponent } from './services/product-list.component';
+import { ProductFormComponent } from './services/product-form.component';
 
 export const routes: Routes = [
 
@@ -34,8 +35,11 @@ export const routes: Routes = [
   { path: 'aprobaciones', component: AdminSolicitudesComponent, canActivate: [roleGuard], data: { roles: ['SUPERVISOR'] } },
 
   // TI – módulos del rol TI
-  { path: 'tickets', component: TicketTiComponent, canActivate: [roleGuard], data: { roles: ['ADMIN'] } },
   { path: 'usuarios', component: UsuariosComponent, canActivate: [roleGuard], data: { roles: ['ADMIN'] } },
+
+  { path: 'productos', component: ProductListComponent, canActivate: [roleGuard], data: { roles: ['ADMIN'] } },
+  { path: 'productos/nuevo', component: ProductFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN'] } },
+  { path: 'productos/editar/:id', component: ProductFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN'] } },
 
   // Página por defecto
   { path: '**', redirectTo: 'inicio' }

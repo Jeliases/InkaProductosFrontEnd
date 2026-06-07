@@ -1,0 +1,77 @@
+<div class="container mt-4 mb-5" style="max-width: 800px;">
+  <div class="card shadow-sm border-0 rounded-4">
+    <div class="card-header bg-light p-3 border-bottom">
+      <h4 class="m-0 text-primary">
+        <i class="bi bi-box-seam me-2"></i>{{ isEditMode ? 'Editar Producto' : 'Crear Nuevo Producto' }}
+      </h4>
+    </div>
+
+    <div class="card-body p-4">
+      <form [formGroup]="productoForm" class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">SKU</label>
+          <input type="text" class="form-control" formControlName="sku" placeholder="Ej: PROD-001" [ngClass]="{'is-invalid': productoForm.get('sku')?.invalid && productoForm.get('sku')?.touched}">
+          <div class="invalid-feedback" *ngIf="productoForm.get('sku')?.hasError('required')">El SKU es requerido</div>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Nombre del Producto</label>
+          <input type="text" class="form-control" formControlName="nombre" placeholder="Nombre" [ngClass]="{'is-invalid': productoForm.get('nombre')?.invalid && productoForm.get('nombre')?.touched}">
+          <div class="invalid-feedback" *ngIf="productoForm.get('nombre')?.hasError('required')">El nombre es requerido</div>
+        </div>
+
+        <div class="col-md-12">
+          <label class="form-label fw-semibold">Descripción</label>
+          <textarea class="form-control" formControlName="descripcion" rows="3" placeholder="Descripción detallada..." [ngClass]="{'is-invalid': productoForm.get('descripcion')?.invalid && productoForm.get('descripcion')?.touched}"></textarea>
+          <div class="invalid-feedback" *ngIf="productoForm.get('descripcion')?.hasError('required')">La descripción es requerida</div>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Categoría</label>
+          <select class="form-select" formControlName="categoriaId" [ngClass]="{'is-invalid': productoForm.get('categoriaId')?.invalid && productoForm.get('categoriaId')?.touched}">
+            <option [ngValue]="null">Selecciona una categoría...</option>
+            <option *ngFor="let cat of categorias" [value]="cat.categoriaId || cat.id">
+              {{ cat.nombre }}
+            </option>
+          </select>
+          <div class="invalid-feedback" *ngIf="productoForm.get('categoriaId')?.hasError('required')">Selecciona una categoría</div>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Unidad de Medida</label>
+          <select class="form-select" formControlName="uomId" [ngClass]="{'is-invalid': productoForm.get('uomId')?.invalid && productoForm.get('uomId')?.touched}">
+            <option [ngValue]="null">Selecciona unidad...</option>
+            <option *ngFor="let uom of uoms" [value]="uom.id">
+              {{ uom.nombre }}
+            </option>
+          </select>
+          <div class="invalid-feedback" *ngIf="productoForm.get('uomId')?.hasError('required')">Requerido</div>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Precio de Lista</label>
+          <input type="number" class="form-control" formControlName="precioLista" placeholder="0.00" min="0" [ngClass]="{'is-invalid': productoForm.get('precioLista')?.invalid && productoForm.get('precioLista')?.touched}">
+          <div class="invalid-feedback" *ngIf="productoForm.get('precioLista')?.hasError('required')">El precio es requerido</div>
+        </div>
+
+        <!-- INVENTARIO INICIAL POR SEDE (SOLO VISIBLE AL CREAR) -->
+        <div class="col-md-12 mt-4" *ngIf="!isEditMode">
+          <h5 class="text-secondary border-bottom pb-2"><i class="bi bi-buildings me-2"></i>Stock Inicial por Sede</h5>
+          <div class="row g-3" formArrayName="stocksSedes">
+            <div class="col-md-4" *ngFor="let stockCtrl of stocksSedes.controls; let i = index" [formGroupName]="i">
+              <label class="form-label fw-semibold text-muted">{{ stockCtrl.get('nombre')?.value }}</label>
+              <input type="number" class="form-control form-control-sm" formControlName="cantidad" min="0">
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="card-footer p-3 bg-light d-flex justify-content-end m-0">
+      <button class="btn btn-outline-danger me-2" routerLink="/productos">Cancelar</button>
+      <button class="btn btn-primary" [disabled]="productoForm.invalid" (click)="guardar()">
+        {{ isEditMode ? 'Guardar Cambios' : 'Crear Producto' }}
+      </button>
+    </div>
+  </div>
+</div>
