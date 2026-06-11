@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class AprobacionesService {
 
-  private url = 'http://localhost:8081/api/aprobaciones';
+  private url = 'http://localhost:8080/api/aprobaciones';
 
   constructor(private http: HttpClient) {}
 

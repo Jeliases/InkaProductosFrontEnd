@@ -8,8 +8,8 @@ import { AuthService } from './auth.service';
 })
 export class ProductService {
 
-  private movimientosUrl = 'http://localhost:8081/api/movimientos';
-  private solicitudesUrl = 'http://localhost:8081/api/solicitudes';
+  private movimientosUrl = 'http://localhost:8080/api/movimientos';
+  private solicitudesUrl = 'http://localhost:8080/api/solicitudes';
 
   constructor(
     private http: HttpClient,
@@ -25,7 +25,7 @@ export class ProductService {
   // USER — SUS SOLICITUDES
 
   getMisSolicitudes(email: string): Observable<any[]> {
-    return this.http.get<any[]>(`http://localhost:8081/api/solicitudes/mias`, {
+    return this.http.get<any[]>(`http://localhost:8080/api/solicitudes/mias`, {
       params: { email }
     });
   }
@@ -39,7 +39,7 @@ export class ProductService {
   }
 
   getSolicitudesPendientes() {
-    return this.http.get<any[]>(`http://localhost:8081/api/solicitudes/pendientes`);
+    return this.http.get<any[]>(`http://localhost:8080/api/solicitudes/pendientes`);
   }
   
   

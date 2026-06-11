@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class SolicitudService {
-  private apiUrl = 'http://localhost:8081/api/solicitudes';
+  private apiUrl = 'http://localhost:8080/api/solicitudes';
 
   constructor(private http: HttpClient) {}
 

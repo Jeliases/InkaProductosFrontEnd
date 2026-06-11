@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class MovimientoService {
 
-  private baseUrl = 'http://localhost:8081/api/movimientos';
+  private baseUrl = 'http://localhost:8080/api/movimientos';
 
   constructor(private http: HttpClient) {}
 
