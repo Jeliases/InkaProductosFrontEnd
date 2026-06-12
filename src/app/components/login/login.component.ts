@@ -19,22 +19,22 @@ export class LoginComponent {
 
   constructor(private authService: AuthService, private router: Router) {}
 
-  ingresar() {
-    this.error = '';
+ingresar() {
+  this.error = '';
 
-    // Enviamos las credenciales al servicio
-    this.authService.login(this.email, this.password).subscribe({
-      next: (res) => {
-        // ¡Magia! No necesitamos llamar a guardarUsuario. 
-        // El AuthService ya guardó el token y los roles mediante el operador 'tap'.
-        
-        console.log('Login exitoso, redirigiendo a inicio...');
-        this.router.navigate(['/inicio']);
-      },
-      error: (err) => {
-        console.error('Error en el login:', err);
-        this.error = 'Credenciales incorrectas o servidor no disponible';
-      }
-    });
-  }
+  this.authService.login(this.email, this.password).subscribe({
+    next: (res) => {
+      console.log('Login exitoso, redirigiendo a inicio...');
+      
+      localStorage.setItem("token", res.token); 
+      
+      this.router.navigate(['/inicio']);
+    },
+    error: (err) => {
+      // AQUÍ ESTÁ LA CORRECCIÓN: Ahora solo muestra error y NO te deja entrar
+      console.error('Error en el login:', err);
+      this.error = 'Credenciales incorrectas. Intente nuevamente.';
+    }
+  });
+}
 }

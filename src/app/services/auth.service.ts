@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 
 @Injectable({
@@ -16,15 +16,17 @@ export class AuthService {
   /**
    * Procesa el login y guarda el JWT de forma automática
    */
-  login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, { email, password }).pipe(
-      tap((res: any) => {
-        // Almacenamos el Token y los datos del usuario de forma segura
-        this.guardarSesion(res);
-      })
-    );
-  }
 
+// ... dentro de tu clase AuthService
+login(email: string, password: string): Observable<any> {
+  
+  const body = { email: email, password: password }; 
+  const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  
+  return this.http.post(`${this.apiUrl}/login`, body, { headers }).pipe(
+    tap((res: any) => this.guardarSesion(res))
+  );
+}
   /**
    * Guarda los datos del AuthResponseDTO en el LocalStorage
    */
