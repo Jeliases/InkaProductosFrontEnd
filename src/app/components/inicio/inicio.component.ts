@@ -26,8 +26,12 @@ export class InicioComponent implements OnInit {
     this.rol = this.auth.getRol();
   }
 
-  // Métodos de ayuda para el HTML (ngIf)
+  // Lógica de roles corregida para que coincida exactamente con PostgreSQL
   esAdmin(): boolean { 
+    return this.rol === 'ADMIN'; 
+  }
+  
+  esSupervisor(): boolean { 
     return this.rol === 'SUPERVISOR'; 
   }
   

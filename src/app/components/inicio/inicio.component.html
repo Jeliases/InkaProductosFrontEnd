@@ -1,6 +1,5 @@
 <div class="container mt-5" style="max-width: 1100px;">
 
-  <!-- ENCABEZADO -->
   <div class="text-center mb-5">
     <h1 class="fw-bold text-primary mb-2">
       Bienvenido a Inka Productos
@@ -11,10 +10,7 @@
   </div>
 
 
-  <!-- =============================== -->
-  <!-- ADMIN -->
-  <!-- =============================== -->
-  <div class="row g-4" *ngIf="esAdmin()">
+  <div class="row g-4" *ngIf="esAdmin() || esSupervisor()">
 
     <div class="col-md-4">
       <div class="card h-100 shadow-sm p-4 border-0 rounded-4 border-start border-5 border-info">
@@ -46,14 +42,21 @@
       </div>
     </div>
 
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm p-4 border-0 rounded-4 border-start border-5 border-secondary">
+        <h5 class="fw-bold mb-2 text-secondary">Mesa de Ayuda</h5>
+        <p class="text-muted">Solicita soporte o habilitación de roles.</p>
+        <a routerLink="/tickets-nuevo" class="btn btn-outline-secondary fw-semibold mt-3 rounded-pill">
+          Enviar Ticket
+        </a>
+      </div>
+    </div>
+
   </div>
 
 
 
-  <!-- =============================== -->
-  <!-- USER -->
-  <!-- =============================== -->
-  <div class="row g-4" *ngIf="esUser()">
+  <div class="row g-4 mt-2" *ngIf="esUser()">
 
     <div class="col-md-4">
       <div class="card h-100 shadow-sm p-4 border-0 rounded-4 border-start border-5 border-info">
@@ -89,10 +92,7 @@
 
 
 
-  <!-- =============================== -->
-  <!-- TI -->
-  <!-- =============================== -->
-  <div class="row g-4" *ngIf="esTI()">
+  <div class="row g-4 mt-2" *ngIf="esTI()">
 
     <div class="col-md-4">
       <div class="card h-100 shadow-sm p-4 border-0 rounded-4 border-start border-5 border-primary">
@@ -117,19 +117,26 @@
     <div class="col-md-4">
       <div class="card h-100 shadow-sm p-4 border-0 rounded-4 border-start border-5 border-warning">
         <h5 class="fw-bold mb-2 text-warning">Historial</h5>
-        <p class="text-muted">Historial de Movimientos</p>
+        <p class="text-muted">Historial general de Movimientos.</p>
         <a routerLink="/historial" class="btn btn-warning fw-semibold mt-3 rounded-pill">
           Ver movimientos
         </a>
       </div>
     </div>
 
-    
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm p-4 border-0 rounded-4 border-start border-5 border-dark">
+        <h5 class="fw-bold mb-2 text-dark">Tickets Soporte</h5>
+        <p class="text-muted">Gestiona los tickets creados por supervisores.</p>
+        <a routerLink="/tickets-lista" class="btn btn-dark fw-semibold mt-3 rounded-pill">
+          Ver Bandeja
+        </a>
+      </div>
+    </div>
 
   </div>
 
 
-  <!-- CONSEJO -->
   <div class="alert alert-primary mt-5 d-flex align-items-center shadow-sm rounded-3">
     <i class="bi bi-info-circle-fill me-3 fs-4"></i>
     <div class="small">

@@ -10,6 +10,8 @@ import { UsuariosComponent } from './components/usuarios/usuarios.component';
 import { roleGuard } from './guards/role.guard';
 import { ProductListComponent } from './services/product-list.component';
 import { ProductFormComponent } from './services/product-form.component';
+import { TicketNuevoComponent } from './components/soporte/ticket-nuevo/ticket-nuevo.component';
+import { TicketListaComponent } from './components/soporte/ticket-lista/ticket-lista.component';
 
 export const routes: Routes = [
 
@@ -41,6 +43,20 @@ export const routes: Routes = [
   { path: 'productos/nuevo', component: ProductFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN'] } },
   { path: 'productos/editar/:id', component: ProductFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN'] } },
 
-  // Página por defecto
+  // --- Módulos de Soporte (Tickets) ---
+  { 
+    path: 'tickets-nuevo', 
+    component: TicketNuevoComponent, 
+    canActivate: [roleGuard], 
+    data: { roles: ['SUPERVISOR'] } 
+  },
+  { 
+    path: 'tickets-lista', 
+    component: TicketListaComponent, 
+    canActivate: [roleGuard], 
+    data: { roles: ['ADMIN'] } 
+  },
+
+  // --- Página por defecto (SIEMPRE AL FINAL) ---
   { path: '**', redirectTo: 'inicio' }
 ];

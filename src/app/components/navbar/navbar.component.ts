@@ -19,25 +19,21 @@ export class NavbarComponent implements OnInit {
   constructor(private router: Router, private auth: AuthService) {}
 
   ngOnInit() {
-    // 1. Usamos los nuevos métodos limpios del AuthService
     this.usuarioNombre = this.auth.getNombre();
     this.email = this.auth.getEmail();
-    this.rol = this.auth.getRol(); // Ya viene sin "ROLE_" gracias a tu AuthService
+    this.rol = this.auth.getRol(); 
 
-    console.log("🟢 Rol detectado en Navbar:", this.rol); // <-- Útil para saber qué rol tienes
+    console.log(" Rol detectado en Navbar:", this.rol); 
   }
 
-  // Lógica de roles simplificada para tus directivas *ngIf del HTML
-  esAdmin() { return this.rol === 'SUPERVISOR'; }
-  esUser()  { return this.rol === 'USUARIO'; }
-  esTI()    { return this.rol === 'ADMIN'; } 
+  // Lógica de roles corregida. Apuntamos a la variable "this.rol" que ya cargamos.
+  esAdmin()      { return this.rol === 'ADMIN'; }
+  esSupervisor() { return this.rol === 'SUPERVISOR'; }
+  esUser()       { return this.rol === 'USUARIO'; }
+  esTI()         { return this.rol === 'ADMIN'; } // Si TI es lo mismo que Admin en tu BD
 
-  /**
-   * Logout Profesional
-   * Ahora delegamos la limpieza al servicio para que borre Token, Roles y Nombre de un solo golpe.
-   */
   onLogout() {
-    this.auth.cerrarSesion(); // Esto hace el localStorage.clear() que definimos
+    this.auth.cerrarSesion(); 
     this.router.navigate(['/login']);
   }
 }

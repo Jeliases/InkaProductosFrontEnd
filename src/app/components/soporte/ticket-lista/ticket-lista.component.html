@@ -1,0 +1,58 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Gestión de Tickets de Soporte</h2>
+
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <label for="filtroEstado" class="form-label">Estado del Ticket</label>
+      <select id="filtroEstado" class="form-select" [(ngModel)]="estadoSeleccionado" (ngModelChange)="aplicarFiltros()">
+        <option value="TODOS" selected>Todos</option>
+        <option value="ABIERTO">Abiertos</option>
+        <option value="EN_REVISION">En Revisión</option>
+        <option value="CERRADO">Cerrados</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th>ID</th>
+          <th>Fecha</th>
+          <th>Remitente</th>
+          <th>Asunto</th>
+          <th>Categoría</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="ticketsFiltrados.length === 0">
+          <td colspan="7" class="text-center">No se encontraron tickets con el filtro seleccionado.</td>
+        </tr>
+        <tr *ngFor="let ticket of ticketsFiltrados">
+          <td>{{ ticket.mensajeId }}</td>
+          <td>{{ ticket.fechaEnvio | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ ticket.emisorEmail }}</td>
+          <td>{{ ticket.asunto }}</td>
+          <td>{{ ticket.categoria }}</td>
+          <td>
+            <span *ngIf="ticket.estado === 'ABIERTO'" class="badge bg-info text-dark fs-6">ABIERTO</span>
+            <span *ngIf="ticket.estado === 'EN_REVISION'" class="badge bg-warning text-dark fs-6">REVISIÓN</span>
+            <span *ngIf="ticket.estado === 'CERRADO'" class="badge bg-success fs-6">CERRADO</span>
+          </td>
+          <td>
+            <select class="form-select form-select-sm" 
+                    [ngModel]="ticket.estado" 
+                    (ngModelChange)="cambiarEstado(ticket.mensajeId, $event)"
+                    [disabled]="ticket.estado === 'CERRADO'">
+              <option value="ABIERTO">Mantener Abierto</option>
+              <option value="EN_REVISION">Pasar a Revisión</option>
+              <option value="CERRADO">Cerrar Ticket</option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

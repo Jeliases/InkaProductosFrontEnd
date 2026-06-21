@@ -1,0 +1,54 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Enviar Ticket de Soporte</h2>
+
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+      
+      <div *ngIf="mensajeExito" class="alert alert-success fw-bold">
+        <i class="bi bi-check-circle me-2"></i> {{ mensajeExito }}
+      </div>
+
+      <form (ngSubmit)="enviarTicket()" #ticketForm="ngForm">
+        
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Remitente</label>
+            <input type="text" class="form-control bg-light" [value]="ticket.emisorEmail" disabled>
+            <div class="form-text">Tu correo se asigna automáticamente.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Categoría *</label>
+            <select class="form-select" name="categoria" [(ngModel)]="ticket.categoria" required>
+              <option value="CREACION_USUARIO">Creación de Usuario</option>
+              <option value="HABILITAR_ROL">Habilitar Rol</option>
+              <option value="EDICION_PRODUCTO">Edición de Producto</option>
+              <option value="SOPORTE_TECNICO">Soporte Técnico</option>
+              <option value="OTROS">Otros</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold">Asunto *</label>
+          <input type="text" class="form-control" name="asunto" [(ngModel)]="ticket.asunto" placeholder="Ej. Solicito habilitar rol de ventas para nuevo ingreso" required>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-bold">Detalle de la Solicitud *</label>
+          <textarea class="form-control" rows="5" name="contenido" [(ngModel)]="ticket.contenido" placeholder="Describe detalladamente tu solicitud u observación..." required></textarea>
+        </div>
+
+        <div class="d-flex justify-content-end">
+          <button type="button" class="btn btn-outline-secondary me-2" routerLink="/inicio">Cancelar</button>
+          
+          <button type="submit" class="btn btn-success px-4" [disabled]="!ticketForm.form.valid || cargando">
+            <span *ngIf="!cargando">Enviar Ticket</span>
+            <span *ngIf="cargando">Enviando...</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
